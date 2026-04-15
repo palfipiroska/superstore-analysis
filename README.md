@@ -47,15 +47,15 @@ Certain categories consistently generate strong margins and should be prioritize
 
 ### Profit by Sub-Category
 
-profit_by_category.png
+![Profit Chart](outputs/charts/profit_by_category.png)
 
 Shows which categories generate profit vs loss.
 
 ---
 
-### Discount vs Profit Margin
+### Discount vs Profit Margin()
 
-discount_vs_margin.png
+![Discount vs Margin](outputs/charts/discount_vs_margin.png)
 
 Shows relationship between discounting and profitability efficiency.
 
