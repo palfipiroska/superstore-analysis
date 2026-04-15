@@ -1,103 +1,135 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 
 # -----------------------------
-# 1. LOAD
+# 1. LOAD DATA
 # -----------------------------
 def load_data(path="data/superstore.csv"):
-    df = pd.read_csv(path)
-    return df
+    return pd.read_csv(path)
 
 
 # -----------------------------
-# 2. BASIC CLEANING
+# 2. CLEANING
 # -----------------------------
 def clean_data(df):
-    # ensure correct types
+    df = df.copy()
+
     df["Order Date"] = pd.to_datetime(df["Order Date"], errors="coerce")
     df["Ship Date"] = pd.to_datetime(df["Ship Date"], errors="coerce")
-    df["Profit Margin"] = df["Profit"] / df["Sales"]
 
-    # drop obvious bad rows (if any)
+    # remove broken rows
     df = df.dropna()
+
+    # avoid divide-by-zero issues
+    df = df[df["Sales"] != 0]
 
     return df
 
 
 # -----------------------------
-# 3. CORE ANALYSIS
+# 3. FEATURE ENGINEERING
 # -----------------------------
-def category_profit_analysis(df):
+def add_features(df):
+    df = df.copy()
+
+    df["Profit Margin"] = df["Profit"] / df["Sales"]
+
+    return df
+
+
+# -----------------------------
+# 4. ANALYSIS TABLES
+# -----------------------------
+def category_summary(df):
+    summary = df.groupby("Sub-Category").agg(
+        sales=("Sales", "sum"),
+        profit=("Profit", "sum"),
+        discount=("Discount", "mean"),
+        margin=("Profit Margin", "mean")
+    )
+
+    summary["efficiency"] = summary["profit"] / summary["sales"]
+
+    return summary.sort_values("efficiency")
+
+
+def profitability_ranking(df):
     return df.groupby("Sub-Category")["Profit"].sum().sort_values()
 
 
-def category_discount_analysis(df):
-    return df.groupby("Sub-Category")["Discount"].mean().sort_values(ascending=False)
-
-
-def category_sales_analysis(df):
+def sales_ranking(df):
     return df.groupby("Sub-Category")["Sales"].sum().sort_values(ascending=False)
 
 
-def category_profit_margin_analysis(df):
-    df["Profit Margin"] = df["Profit"] / df["Sales"]
-    return df.groupby("Sub-Category")["Profit Margin"].mean().sort_values()
-
-
 # -----------------------------
-# 4. RUN PIPELINE
+# 5. VISUALS
 # -----------------------------
-def create_charts(df):
+def create_charts(df, output_dir="outputs/charts"):
+    os.makedirs(output_dir, exist_ok=True)
+
     # -----------------------------
     # Chart 1: Profit by Sub-Category
     # -----------------------------
-    profit_by_cat = df.groupby("Sub-Category")["Profit"].sum().sort_values()
+    profit = df.groupby("Sub-Category")["Profit"].sum().sort_values()
 
     plt.figure()
-    profit_by_cat.plot(kind="bar")
+    profit.plot(kind="bar")
     plt.title("Profit by Sub-Category")
-    plt.ylabel("Total Profit")
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f"{output_dir}/profit_by_subcategory.png")
+    plt.close()
 
     # -----------------------------
-    # Chart 2: Profit Margin vs Discount (relationship view)
+    # Chart 2: Danger Zone
+    # Discount vs Profit Margin
     # -----------------------------
-
-    summary = df.groupby("Sub-Category")[["Profit Margin", "Discount"]].mean()
+    summary = df.groupby("Sub-Category").agg(
+        discount=("Discount", "mean"),
+        margin=("Profit Margin", "mean")
+    )
 
     plt.figure()
-    plt.scatter(summary["Discount"], summary["Profit Margin"])
+    plt.scatter(summary["discount"], summary["margin"])
 
-    for i in summary.index:
-        plt.text(summary.loc[i, "Discount"],
-                 summary.loc[i, "Profit Margin"], i, fontsize=8)
+    for name in summary.index:
+        plt.text(
+            summary.loc[name, "discount"],
+            summary.loc[name, "margin"],
+            name,
+            fontsize=8
+        )
 
-    plt.title("Discount vs Profit Margin by Sub-Category")
+    plt.title("Danger Zone: Discount vs Profit Margin")
     plt.xlabel("Average Discount")
     plt.ylabel("Average Profit Margin")
+
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f"{output_dir}/danger_zone.png")
+    plt.close()
 
 
+# -----------------------------
+# 6. PIPELINE
+# -----------------------------
 def main():
     df = load_data()
     df = clean_data(df)
+    df = add_features(df)
 
-    print("\nTOP LOSING CATEGORIES:")
-    print(category_profit_analysis(df))
+    print("\n=== CATEGORY SUMMARY (Efficiency Ranking) ===")
+    print(category_summary(df))
 
-    print("\nHIGHEST DISCOUNT CATEGORIES:")
-    print(category_discount_analysis(df))
+    print("\n=== MOST UNPROFITABLE CATEGORIES ===")
+    print(profitability_ranking(df))
 
-    print("\nTOP SALES CATEGORIES:")
-    print(category_sales_analysis(df))
-
-    print("\nPROFIT MARGIN BY CATEGORY:")
-    print(category_profit_margin_analysis(df))
+    print("\n=== TOP SALES CATEGORIES ===")
+    print(sales_ranking(df))
 
     create_charts(df)
+
+    print("\nCharts saved to outputs/charts/")
 
 
 if __name__ == "__main__":

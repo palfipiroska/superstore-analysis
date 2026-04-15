@@ -1,74 +1,87 @@
-# Superstore Sales Analysis (Python Project)
+# 📊 Superstore Sales Analysis – Profitability & Discount Risk Study
 
-## Objective
+## 🎯 Executive Summary
 
-Analyze sales performance to understand how revenue, profit, and discounting interact across product sub-categories.
+This analysis explores profitability patterns in a retail “Superstore” dataset with a focus on discount impact, sub-category performance, and margin efficiency.
 
-The goal is to identify which categories drive profit and which destroy value despite high sales.
+Key findings:
 
----
+- Profitability is highly concentrated in a small number of sub-categories
+- High discount levels are strongly correlated with lower or negative profit margins
+- Certain high-cost product groups remain profitable due to controlled discounting
 
-## Dataset
-
-Retail transaction data including:
-
-- Sales
-- Profit
-- Discount
-- Sub-Category
+The analysis highlights structural inefficiencies in pricing and discount strategy.
 
 ---
 
-## Tools Used
+## 🧠 Key Insights
 
-- Python
-- pandas (data analysis)
-- matplotlib (visualization)
-
----
-
-## Key Insights
-
-### 1. High Sales ≠ High Profit
-
-Some sub-categories generate strong sales but negative profitability due to cost structure and discounting.
-
-### 2. Discounting reduces profitability
-
-Higher average discounts are generally associated with lower profit margins.
-
-### 3. Clear profit drivers exist
-
-Certain categories consistently generate strong margins and should be prioritized for growth.
+- **Discount sensitivity is the strongest driver of margin erosion**
+- Sub-categories such as _Tables, Bookcases, and Supplies_ show consistent underperformance
+- High-value categories (e.g. Copiers) remain profitable due to low discount exposure despite high unit cost
+- Profit distribution is highly skewed, indicating dependency on a limited set of categories
 
 ---
 
-## Visual Analysis
+## 📊 Visual Evidence
 
-### Profit by Sub-Category
+### Danger Zone: Discount vs Profit Margin
 
-![Profit Chart](outputs/charts/profit_by_category.png)
+![Danger Zone](outputs/charts/danger_zone.png)
 
-Shows which categories generate profit vs loss.
+This chart shows the relationship between discount intensity and profitability across sub-categories.
 
----
-
-### Discount vs Profit Margin()
-
-![Discount vs Margin](outputs/charts/discount_vs_margin.png)
-
-Shows relationship between discounting and profitability efficiency.
+Higher discount levels consistently align with reduced or negative profit margins, indicating that discounting is not being used in a controlled or value-driven way across all product groups.
 
 ---
 
-## Business Recommendation
+### 📊 Profit Distribution by Sub-Category
 
-- Reduce aggressive discounting in loss-making categories
-- Focus on high-margin categories instead of high-sales categories
-- Re-evaluate pricing strategy for structurally unprofitable segments
+![Profit Distribution](outputs/charts/profit_by_subcategory.png)
+
+This chart highlights the distribution of total profit across sub-categories.
+
+A small number of sub-categories generate the majority of profit, while several categories operate at low or negative returns.
 
 ---
 
-## Conclusion
+## 📈 Category-Level Performance Summary
 
-This analysis demonstrates that revenue growth alone is not a sufficient performance metric. Profitability and discount efficiency must be considered together for sustainable business decisions.
+| Sub-Category |  Sales |   Profit | Discount | Margin Assessment |
+| ------------ | -----: | -------: | -------: | ----------------- |
+| Copiers      |   High |     High |      Low | Highly Efficient  |
+| Tables       | Medium | Negative |     High | Risk Zone         |
+| Bookcases    | Medium |      Low |     High | Weak Efficiency   |
+| Supplies     |    Low | Negative |   Medium | Inefficient       |
+
+---
+
+## ⚠️ Risk Zones Identified
+
+- High discount + low margin categories:
+  - Tables
+  - Bookcases
+  - Supplies
+
+These categories show structural profitability issues and should be reviewed for pricing and discount strategy.
+
+---
+
+## 💡 Business Implications
+
+- Discounting is being applied too aggressively in low-margin categories
+- Profit concentration increases business risk exposure
+- Pricing strategy is not uniformly aligned with cost structure
+- Optimisation potential exists in discount governance and category segmentation
+
+---
+
+## 🛠️ Tools Used
+
+- Python (Pandas, Matplotlib, Seaborn)
+- Jupyter / Script-based analysis
+- Basic statistical aggregation and segmentation
+
+---
+
+## 📁 Project Structure
